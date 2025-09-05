@@ -1,3 +1,3 @@
 #! /bin/bash
 
-bash script.sh --directorio ./temporal/ --pantalla
+bash script.sh --directorio ./assets/ --pantalla
