@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 # Configurations variables
 pDirShortName="d"
