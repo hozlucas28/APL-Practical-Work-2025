@@ -1,6 +1,10 @@
-# Integrantes del grupo:
-# Rodriguez Gonzalo
-#
+#!/usr/bin/env bash
+
+# ejercicio5.sh
+
+# Autores: Gonzalo Rodriguez;Lucas Hoz; Luis Choque; Maira Farias; Valentin Massa
+
+# APL 2025 - Virtualización de Hardware
 
 set -euo pipefail
 
