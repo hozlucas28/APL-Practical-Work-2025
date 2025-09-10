@@ -15,10 +15,10 @@ fResponseTimeAVG="tiempo_respuesta_promedio"
 fScoreAVG="nota_satisfaccion_promedio"
 
 # Parse parameters
-parameters=$(getopt -o "$pDirShortName:$pFileShortName:$pDisplayShortName" --long "$pDirLongName:,$pFileLongName:,$pDisplayLongName" -- "$@")
+parameters=$(getopt -o "h$pDirShortName:$pFileShortName:$pDisplayShortName" --long "help,$pDirLongName:,$pFileLongName:,$pDisplayLongName" -- "$@")
 
 if [ $? -ne 0 ]; then
-  echo "> Failed to parse parameters" >&2
+  echo "> Failed to parse options" >&2
   exit 1
 fi
 
@@ -26,6 +26,11 @@ eval set -- "$parameters"
 
 while true; do
     case "$1" in
+      "-h" | "--help")
+        help=true
+        shift 1
+        break
+        ;;
       "-$pDirShortName" | "--$pDirLongName")
         directory="$2"
         shift 2
@@ -43,26 +48,45 @@ while true; do
         break
         ;;
       *)
-        echo "> An error occurred while parsing parameters" >&2
+        echo "> An error occurred while parsing options" >&2
         exit 1
         ;;
     esac
 done
 
+# Print help
+if [ -n "$help" ]; then
+  printf "Usage: bash script.sh [OPTION...]\
+
+
+  -d, --directorio  directory containing the survey files to process\
+
+  -a, --archivo     path to the output JSON file\
+
+  -p, --pantalla    displays the output on screen\
+
+  -h, --help        give this help list\
+
+
+\`-a\` / \`--archivo\` and \`-p\` / \`--pantalla\` options must not be declarer together.
+"
+  exit 0
+fi
+
 # Verify `directory` parameter
 if [ -z "$directory" ]; then
-  echo "> \`-$pDirShortName\` / \`--$pDirLongName\` parameter required" >&2
+  echo "> \`-$pDirShortName\` / \`--$pDirLongName\` option required" >&2
   exit 1
 fi
 
 if [ ! -d "$directory" ]; then
-  echo "> \`-$pDirShortName\` / \`--$pDirLongName\` parameter must be a valid directory" >&2
+  echo "> \`-$pDirShortName\` / \`--$pDirLongName\` option must be a valid directory" >&2
   exit 1
 fi
 
 # Verify `file` and `display` parameters
 if [ -z "$file" ] && [ -z "$display" ]; then
-  echo "> \`-$pFileShortName\` / \`--$pFileLongName\`, xor \`-$pDisplayShortName\` / \`--$pDisplayLongName\` parameters required" >&2
+  echo "> \`-$pFileShortName\` / \`--$pFileLongName\`, xor \`-$pDisplayShortName\` / \`--$pDisplayLongName\` options required" >&2
   exit 1
 fi
 
@@ -77,7 +101,7 @@ if [ -n "$file" ]; then
     *.json)
       ;;
     *)
-      echo "> \`-$pFileShortName\` / \`--$pFileLongName\` parameter must be a \`.json\` file" >&2
+      echo "> \`-$pFileShortName\` / \`--$pFileLongName\` option must be a \`.json\` file" >&2
       exit 1
       ;;
   esac
@@ -101,8 +125,6 @@ sortedTempFile="/tmp/satisfaction-surveys-sorted-$$.tmp.txt"
 sort -t "$fieldSep" -k2.1,2.10 -k3,3 "$tempFile" > "$sortedTempFile"
 
 rm "$tempFile"
-
-cat "$sortedTempFile" > temporal.txt
 
 # Calculate satisfaction survey averages
 lastDate=""
