@@ -4,22 +4,23 @@
 .SYNOPSIS
   Script para contar ocurrencias de palabras clave en archivos .log
 .DESCRIPTION
-  Analiza todos los archivos con extensión .log en un directorio
-  y cuenta cuántas veces aparecen las palabras clave (case-insensitive).
+  Analiza todos los archivos con extensiÃ³n .log en un directorio
+  y cuenta cuÃ¡ntas veces aparecen las palabras clave (case-insensitive).
 .PARAMETER directorio
   Ruta del directorio con archivos .log
 .PARAMETER palabras
-  Array de palabras clave a buscar (ej: "usb","invalid")
+  Array de palabras clave a buscar (ej: "usb,invalid")
 .EXAMPLE
-  ./ejercicio3.ps1 -directorio "./logs" -palabras "usb","invalid"
+  ./ejercicio3.ps1 -directorio "./logs" -palabras "usb,invalid"
 #>
+
 
 param(
     [Parameter(Mandatory=$true)]
     [string]$directorio,
 
     [Parameter(Mandatory=$true)]
-    [string[]]$palabras
+    [string]$palabras
 )
 
 # Validaciones
@@ -28,10 +29,13 @@ if (-not (Test-Path $directorio)) {
     exit 1
 }
 
+# Convertir la cadena en array (separando por comas)
+$keywords = $palabras.Split(",") | ForEach-Object { $_.Trim() }
+
 # Inicializar contador
 $conteo = @{}
-foreach ($p in $palabras) {
-    $conteo[$p] = 0
+foreach ($k in $keywords) {
+    $conteo[$k] = 0
 }
 
 # Procesar archivos .log
@@ -40,15 +44,15 @@ Get-ChildItem -Path $directorio -Filter *.log | ForEach-Object {
     $lineas = Get-Content $archivo
 
     foreach ($linea in $lineas) {
-        foreach ($p in $palabras) {
-            $matches = [regex]::Matches($linea, $p, "IgnoreCase")
-            $conteo[$p] += $matches.Count
+        foreach ($k in $keywords) {
+            $matches = [regex]::Matches($linea, $k, "IgnoreCase")
+            $conteo[$k] += $matches.Count
         }
     }
 }
 
 # Mostrar resultados
-foreach ($p in $palabras) {
-    $valor = $conteo[$p]
-    Write-Output "$p : $valor"
+foreach ($k in $keywords) {
+    $valor = $conteo[$k]
+    Write-Output "$k : $valor"
 }
