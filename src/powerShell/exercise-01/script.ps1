@@ -1,3 +1,6 @@
+
+# Autores: Choque Luis, Farias Maira Soledad, Hoz Lucas, Massa Valentin y Rodriguez Gonzalo Leonel.
+
 <#
 .SYNOPSIS
     Analiza archivos de encuestas de satisfacción de clientes y genera estadísticas por canal y día.
@@ -22,8 +25,8 @@
 Param(
   [Parameter(Mandatory = $true, Position = 1)]
   [string]
-  $directorio,  
-  
+  $directorio,
+
   [Parameter(Mandatory = $true, Position = 2, ParameterSetName = "Window")]
   [switch]
   $pantalla,
@@ -36,30 +39,30 @@ Param(
 
 $headers = @("ID_ENCUESTA", "FECHA", "CANAL", "TIEMPO_RESPUESTA", "NOTA_SATISFACCION")
 
-$csvAgrup = Get-Content $directorio\*.txt | ConvertFrom-Csv -Delimiter "|" -Header $headers 
+$csvAgrup = Get-Content $directorio\*.txt | ConvertFrom-Csv -Delimiter "|" -Header $headers
 
 $grouped = $csvAgrup | Group-Object -Property { ($_.FECHA).Substring(0, 10) }
 
-$jsonresultado = @{}
+$jsonResultado = @{}
 
-foreach ( $date in $grouped) {
-  $jsonresultado[$date.Name] = @{}
+foreach ( $date in $grouped ) {
+  $jsonResultado[$date.Name] = @{}
 
   $canales = $date.Group | Group-Object -Property CANAL
-  foreach ( $canal in $canales) {
-    $TiemportaProm = ($canal.Group | Measure-Object -Property TIEMPO_RESPUESTA -Average).Average
-    $NotaSatis = ($canal.Group | Measure-Object -Property NOTA_SATISFACCION -Average).Average
+  foreach ( $canal in $canales ) {
+    $tiempoRtaProm = ($canal.Group | Measure-Object -Property TIEMPO_RESPUESTA -Average).Average
+    $notaSatis = ($canal.Group | Measure-Object -Property NOTA_SATISFACCION -Average).Average
 
-    $jsonresultado[$date.Name][$canal.Name] = @{
-      tiempo_respuesta_promedio  = [math]::Round($TiemportaProm, 2)
-      nota_satisfaccion_promedio = [math]::Round($NotaSatis, 2)
+    $jsonResultado[$date.Name][$canal.Name] = @{
+      tiempo_respuesta_promedio  = [math]::Round($tiempoRtaProm, 2)
+      nota_satisfaccion_promedio = [math]::Round($notaSatis, 2)
     }
   }
 }
 
 if ($archivo) {
-  $jsonresultado | ConvertTo-Json | Set-Content $archivo
+  $jsonResultado | ConvertTo-Json | Set-Content $archivo
 }
 else {
-  $jsonresultado | ConvertTo-Json | Write-Output 
+  $jsonResultado | ConvertTo-Json | Write-Output
 }
