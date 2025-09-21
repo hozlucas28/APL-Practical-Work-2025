@@ -1,5 +1,7 @@
 #! /bin/bash
 
+# Authors: Choque Luis, Farias Maira Soledad, Hoz Lucas, Massa Valentin y Rodriguez Gonzalo Leonel.
+
 # Configurations variables
 pDirShortName="d"
 pFileShortName="a"
@@ -56,7 +58,7 @@ done
 
 # Print help
 if [ -n "$help" ]; then
-  printf "Uso: bash script.sh [OPTION...]\
+  printf "Uso: bash $0 [OPCIONES...]\
 
 
   -d, --directorio  directorio que contiene los archivos de la encuesta a procesar\
