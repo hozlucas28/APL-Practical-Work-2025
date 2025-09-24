@@ -1,91 +1,60 @@
-#!/bin/bash
+#! /bin/bash
 
 # Autores: Choque Luis, Farias Maira Soledad, Hoz Lucas, Massa Valentin y Rodriguez Gonzalo Leonel.
-# Script demonio para auditar repositorios Git en busca de patrones sensibles
 
-PID_FILE="/tmp/audit.pid"
-COMMIT_FILE="/tmp/last_commit.txt"
+show_help() {
+    printf "Uso: bash $0 [OPCIONES...]\
 
-# Función de ayuda
-usage() {
-    echo "Uso: $0 -r <repo> -c <config> -l <log> [-k] [-h]"
-    echo ""
-    echo "Parámetros:"
-    echo "  -r | --repo           Ruta del repositorio Git a monitorear"
-    echo "  -c | --configuracion  Archivo con lista de patrones a buscar"
-    echo "  -l | --log            Archivo de log donde registrar coincidencias"
-    echo "  -k | --kill           Detener el demonio si está corriendo"
-    echo "  -h | --help           Mostrar ayuda"
-    exit 1
+
+    -r, --repo           ruta del repositorio a monitorear\
+
+    -c, --configuracion  archivo con lista de patrones a buscar\
+
+    -l, --log            archivo donde registraran las coincidencias\
+
+    -k, --kill           detener el demonio, si y solo si, está corriendo\
+
+    -h, --help           muestra esta lista de ayuda\
+
+
+Las opciones \`-r\` / \`--repo\`, \`-c\` / \`--configuracion\` y \`-l\` / \`--log\` son obligatorias.
+Si se define la opción \`-k\` / \`--kill\`, únicamente la opción \`-r\` / \`--repo\` es obligatoria.
+"
 }
 
-# Manejo de parámetros
-while [[ $# -gt 0 ]]; do
-    case $1 in
-        -r|--repo) REPO="$2"; shift 2 ;;
-        -c|--configuracion) CONFIG="$2"; shift 2 ;;
-        -l|--log) LOG="$2"; shift 2 ;;
-        -k|--kill) KILL=1; shift ;;
-        -h|--help) usage ;;
-        *) echo "Parámetro inválido: $1"; usage ;;
-    esac
-done
-
-# Función para detener el demonio
 detener_demonio() {
+    local PID_FILE="$1"
+
     if [[ -f "$PID_FILE" ]]; then
-        PID=$(cat "$PID_FILE")
-        if kill -0 "$PID" 2>/dev/null; then
+        PID=$(cat "$PID_FILE" 2>/dev/null)
+
+        if [[ -n "$PID" ]] && kill -0 "$PID" 2>/dev/null; then
             kill "$PID"
             rm -f "$PID_FILE"
-            echo "Demonio detenido (PID $PID)"
-            exit 0
+            echo "> Demonio detenido (PID $PID)"
         else
-            echo "No hay ningún demonio en ejecución con PID $PID"
-            rm -f "$PID_FILE"
-            exit 1
+            echo "> No hay ningún demonio en ejecución con PID $PID"
+            rm -f "$PID_FILE" 2>/dev/null || true
         fi
     else
-        echo "No existe archivo $PID_FILE, no hay demonio que detener"
-        exit 1
+        echo "> No existe el archivo $PID_FILE, por lo que no hay un demonio para detener"
     fi
 }
 
-# Si se pasa -k, detener demonio y salir
-if [[ "$KILL" == "1" ]]; then
-    detener_demonio
-fi
-
-# Validaciones
-if [[ -z "$REPO" || -z "$CONFIG" || -z "$LOG" ]]; then
-    echo "ERROR: faltan parámetros obligatorios"
-    usage
-fi
-
-if ! git -C "$REPO" rev-parse --is-inside-work-tree &>/dev/null; then
-    echo "ERROR: '$REPO' no es un repositorio Git válido"
-    exit 1
-fi
-
-if [[ ! -f "$CONFIG" ]]; then
-    echo "ERROR: archivo de configuración '$CONFIG' no encontrado"
-    exit 1
-fi
-
-# Función para limpiar al salir
-limpiar() {
-    rm -f "$PID_FILE"
-    echo "Limpieza realizada, demonio detenido"
-    exit 0
-}
-trap limpiar SIGINT SIGTERM EXIT
-
-# Inicio del demonio
 iniciar_demonio() {
-    BRANCH=$(git -C "$REPO" rev-parse --abbrev-ref HEAD 2>/dev/null)
-    echo "Monitoreando repositorio: $REPO (rama: $BRANCH)"
+    local REPO="$1"
+    local CONFIG="$2"
+    local LOG="$3"
+    local PID_FILE="$4"
+    local COMMIT_FILE="$5"
 
-    # Leer el último commit desde archivo si existe
+    BRANCH=$(git -C "$REPO" rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+    echo "> Monitoreando repositorio \`$REPO\` ($BRANCH)"
+    echo "> Demonio corriendo en segundo plano con PID $$"
+    echo "> Terminal liberada"
+
+    # Si existe, leer el último commit
     if [[ -f "$COMMIT_FILE" ]]; then
         last_commit=$(cat "$COMMIT_FILE")
     else
@@ -94,33 +63,129 @@ iniciar_demonio() {
     fi
 
     while true; do
-        new_commit=$(git -C "$REPO" rev-parse HEAD)
-        if [ "$new_commit" != "$last_commit" ]; then
-            echo "Nuevo commit detectado: $new_commit"
+        new_commit=$(git -C "$REPO" rev-parse HEAD 2>/dev/null)
 
+        if [ "$new_commit" != "$last_commit" ]; then
             archivos=$(git -C "$REPO" diff --name-only "$last_commit" "$new_commit")
+
             for archivo in $archivos; do
                 if [[ -f "$REPO/$archivo" ]]; then
-                    while read -r patron; do
-                        if grep -q "$patron" "$REPO/$archivo" 2>/dev/null; then
-                            mensaje="ALERTA: Patrón '$patron' encontrado en '$archivo'"
-                            if ! grep -q "$mensaje" "$LOG" 2>/dev/null; then
-                                echo "$(date '+%Y-%m-%d %H:%M:%S') $mensaje" | tee -a "$LOG"
+                    # Leer patrones (línea por línea)
+                    while IFS= read -r raw_patron || [[ -n "$raw_patron" ]]; do
+                        # Eliminar espacios
+                        patron="$(printf '%s' "$raw_patron" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+                        [[ -z "$patron" ]] && continue
+
+                        if [[ $patron == regex:* ]]; then
+                            # Búsqueda regex
+                            pattern="${patron#regex:}" # Eliminar prefijo "regex:"
+
+                            if grep -En "$pattern" "$REPO/$archivo" >/dev/null 2>&1; then
+                                mensaje="Alerta: patrón '$patron' encontrado en el archivo '$archivo'."
+
+                                if ! grep -F -q "$mensaje" "$LOG" 2>/dev/null; then
+                                    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $mensaje" | tee -a "$LOG" >/dev/null
+                                fi
+                            fi
+                        else
+                            # Búsqueda literal
+                            if grep -F -n "$patron" "$REPO/$archivo" >/dev/null 2>&1; then
+                                mensaje="Alerta: patrón '$patron' encontrado en el archivo '$archivo'."
+
+                                if ! grep -F -q "$mensaje" "$LOG" 2>/dev/null; then
+                                    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $mensaje" | tee -a "$LOG" >/dev/null
+                                fi
                             fi
                         fi
                     done < "$CONFIG"
                 fi
             done
+
             last_commit=$new_commit
             echo "$new_commit" > "$COMMIT_FILE"
         fi
-        sleep 10
+
+        sleep 1
     done
 }
 
-# Lanzar demonio en background
-iniciar_demonio &
-echo $! > "$PID_FILE"
-echo "Demonio corriendo en segundo plano con PID $(cat "$PID_FILE")"
-wait
+# Parseo de parámetros
+while [ $# -gt 0 ]; do
+    case "$1" in
+        "-r" | "--repo")
+            REPO="$2"
+            shift 2
+            ;;
+        "-c" | "--configuracion")
+            CONFIG="$2"
+            shift 2
+            ;;
+        "-l" | "--log")
+            LOG="$2"
+            shift 2
+            ;;
+        "-k" | "--kill")
+            KILL=true
+            shift
+            ;;
+        "-h" | "--help")
+            show_help
+            exit 0
+            ;;
+        *)
+            printf "> Parámetro desconocido \`$1\`\n\n"
+            show_help
+            exit 1
+            ;;
+    esac
+done
 
+# Generar archivos por repositorio para PID y último commit
+REPO_HASH=$(printf "%s" "$REPO" | md5sum | awk '{print $1}')
+PID_FILE="/tmp/audit_${REPO_HASH}.pid"
+COMMIT_FILE="/tmp/last_commit_${REPO_HASH}.txt"
+
+# Si se envía el parámetro `--kill`, detener el demonio y finalizar el script
+if [[ -n "$KILL" ]]; then
+    if [[ -z "$REPO" ]]; then
+        printf "> La opción \`-r\` / \`--repo\` es obligatoria\n\n"
+        show_help
+        exit 1
+    fi
+
+    detener_demonio "$PID_FILE"
+    exit 0
+fi
+
+# Validación de parámetros
+if [[ -z "$REPO" || -z "$CONFIG" || -z "$LOG" ]]; then
+    printf "> Las opciones \`-r\` / \`--repo\`, \`-c\` / \`--configuracion\` y \`-l\` / \`--log\` son obligatorias\n\n"
+    show_help
+    exit 1
+fi
+
+if ! git -C "$REPO" rev-parse --is-inside-work-tree &>/dev/null; then
+    echo "> El repositorio \`$REPO\` no es un repositorio de Git válido"
+    exit 1
+fi
+
+if [[ ! -f "$CONFIG" ]]; then
+    echo "> No se ha encontrado el archivo de configuración \`$CONFIG\`"
+    exit 1
+fi
+
+# Evitar múltiples demonios para el mismo repo
+if [[ -f "$PID_FILE" ]]; then
+    EXISTING_PID=$(cat "$PID_FILE" 2>/dev/null || echo "")
+
+    if [[ -n "$EXISTING_PID" ]] && kill -0 "$EXISTING_PID" 2>/dev/null; then
+        echo "> Ya existe un demonio en ejecución para el repositorio (PID $EXISTING_PID). No se iniciará otro."
+        exit 1
+    else
+        rm -f "$PID_FILE" 2>/dev/null || true
+    fi
+fi
+
+# Ejecutar demonio en background y guardar su PID
+iniciar_demonio "$REPO" "$CONFIG" "$LOG" "$PID_FILE" "$COMMIT_FILE" &
+echo $! > "$PID_FILE"
