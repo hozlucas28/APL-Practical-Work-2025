@@ -5,6 +5,7 @@
 
 # Exclude output files
 src/**/exercise-02/**/informe.*
+src/**/exercise-04/**/*.log
 
 
 
