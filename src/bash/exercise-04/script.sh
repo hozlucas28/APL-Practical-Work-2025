@@ -77,25 +77,14 @@ iniciar_demonio() {
                     patron="$(printf '%s' "$raw_patron" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
                     [[ -z "$patron" ]] && continue
 
-                    if [[ $patron == regex:* ]]; then
-                        # Búsqueda regex
-                        pattern="${patron#regex:}" # Eliminar prefijo "regex:"
+                    # Eliminar el prefijo 'regex:'
+                    patron="${patron#regex:}"
 
-                        if grep -En "$pattern" "$REPO/$archivo" >/dev/null 2>&1; then
-                            mensaje="Alerta: patrón '$patron' encontrado en el archivo '$(realpath "$archivo")'."
+                    if grep -E "$patron" "$REPO/$archivo" >/dev/null 2>&1; then
+                        mensaje="Alerta: patrón '$patron' encontrado en el archivo '$(realpath "$archivo")'."
 
-                            if ! grep -F -q "$mensaje" "$LOG" 2>/dev/null; then
-                                echo "[$(date '+%Y-%m-%d %H:%M:%S')] $mensaje" | tee -a "$LOG" >/dev/null
-                            fi
-                        fi
-                    else
-                        # Búsqueda literal
-                        if grep -F -n "$patron" "$REPO/$archivo" >/dev/null 2>&1; then
-                            mensaje="Alerta: patrón '$patron' encontrado en el archivo '$(realpath "$archivo")'."
-
-                            if ! grep -F -q "$mensaje" "$LOG" 2>/dev/null; then
-                                echo "[$(date '+%Y-%m-%d %H:%M:%S')] $mensaje" | tee -a "$LOG" >/dev/null
-                            fi
+                        if ! grep -F -q "$mensaje" "$LOG" 2>/dev/null; then
+                            echo "[$(date '+%Y-%m-%d %H:%M:%S')] $mensaje" | tee -a "$LOG" >/dev/null
                         fi
                     fi
                 done < "$CONFIG"
