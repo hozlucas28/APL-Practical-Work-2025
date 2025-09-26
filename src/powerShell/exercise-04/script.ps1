@@ -1,7 +1,5 @@
 # Autores: Choque Luis, Farias Maira Soledad, Hoz Lucas, Massa Valentin y Rodriguez Gonzalo Leonel.
 
-# TODO: Parece que no agarra la regex
-
 <#
 .SYNOPSIS
     Script demonio para monitorear repositorios Git y detectar patrones sensibles en archivos modificados.
@@ -60,7 +58,10 @@ param (
 )
 
 function limpiarArchivosTemporales {
-    param($jobIDFile)
+    param(
+        [string]
+        $jobIDFile
+    )
 
     if (Test-Path $jobIDFile) {
         Remove-Item $jobIDFile -ErrorAction SilentlyContinue
@@ -68,7 +69,13 @@ function limpiarArchivosTemporales {
 }
 
 function imprimirError {
-    param($mensaje, $jobIDFile)
+    param(
+        [string]
+        $mensaje,
+
+        [string]
+        $jobIDFile
+    )
 
     Write-Output "$mensaje" -ForegroundColor Red
     limpiarArchivosTemporales $jobIDFile
