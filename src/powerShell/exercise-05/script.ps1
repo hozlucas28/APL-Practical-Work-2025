@@ -118,6 +118,7 @@ function Get-Country {
     return $data
 }
 
+# Obtener los datos de cada país
 foreach ($pais in $nombre) {
     $data = Get-Country "$pais" "$cacheDir"
 
