@@ -69,6 +69,7 @@ iniciar_demonio() {
             archivos=$(git -C "$REPO" diff --name-only "$last_commit" "$new_commit")
 
             for archivo in $archivos; do
+                [[ ! -f "$REPO/$archivo" ]] && continue
                 [[ "$REPO/$archivo" == "$CONFIG" ]] && continue
 
                 # Leer patrones (línea por línea)
