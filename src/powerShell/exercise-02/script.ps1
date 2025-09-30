@@ -4,21 +4,21 @@
 .SYNOPSIS
     Analiza una matriz de adyacencia de una red de transporte público y genera un informe sobre los hubs y los caminos más cortos entre estaciones.
 .DESCRIPTION
-    Procesa un archivo de matriz de adyacencia, valida su formato y permite determinar la estación con más conexiones ("hub") o calcular el camino más corto para visitar todas las estaciones desde cada punto de partida posible (Problema del Viajante - TSP). Utiliza Floyd-Warshall para calcular distancias mínimas y muestra la(s) ruta(s) óptima(s). El informe se guarda en un archivo en el mismo directorio que el archivo de entrada.
+    Procesa un archivo de matriz de adyacencia, valida su formato y permite determinar la estación con más conexiones ("hub") o calcular el camino más corto para visitar todas las estaciones desde cada punto de partida posible. El informe se guarda en un archivo en el mismo directorio que el archivo de entrada.
 .FUNCTIONALITY
-    Validación de matriz cuadrada y simétrica, manejo de parámetros, cálculo de hubs, cálculo de caminos más cortos, generación de informes.
+    Validación de matriz cuadrada y simétrica, manejo de parámetros, cálculo de hubs, cálculo de caminos más cortos y generación de informes.
 .INPUTS
-    Archivo de texto con la matriz de adyacencia, cada fila separada por un carácter configurable (por defecto "|").
+    Archivo de texto con la matriz de adyacencia, cada fila separada por un carácter.
 .OUTPUTS
     Archivo de informe en formato texto con el análisis solicitado (hub o camino más corto).
 .NOTES
     La matriz debe ser cuadrada y simétrica, con valores numéricos (enteros o decimales). No se puede usar simultáneamente la opción de hub y de camino.
 .EXAMPLE
     .\script.ps1 -matriz "C:\mapa_transporte.txt" -hub -separador "|"
-    Analiza la matriz y muestra en el informe la estación hub de la red.
+    Analiza la matriz y genera el informe con la estación hub de la red.
 .EXAMPLE
     .\script.ps1 -matriz "C:\mapa_transporte.txt" -camino -separador "|"
-    Analiza la matriz y muestra el camino más corto para visitar todas las estaciones desde cada punto de partida posible.
+    Analiza la matriz y genera el informe con los caminos más cortos para visitar todas las estaciones desde cada punto de partida posible.
 #>
 
 Param(
@@ -47,7 +47,7 @@ function Get-CaminoMasCorto {
 
     $n = $matriz.Length
 
-    # Inicializar la matriz de distancias con Floyd-Warshall
+    # Inicializar la matriz de distancias
     $distancias = New-Object 'double[,]' $n, $n
 
     for ($i = 0; $i -lt $n; $i++) {
@@ -64,7 +64,7 @@ function Get-CaminoMasCorto {
         }
     }
 
-    # Realizar algoritmo de Floyd-Warshall
+    # Realizar algoritmo
     for ($k = 0; $k -lt $n; $k++) {
         for ($i = 0; $i -lt $n; $i++) {
             for ($j = 0; $j -lt $n; $j++) {
