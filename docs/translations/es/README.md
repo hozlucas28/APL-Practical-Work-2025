@@ -100,7 +100,7 @@ APL-Practical-Work-2025/
 
 ## Licencia
 
-Este repositorio está bajo la [Licencia MIT](../../../LICENSE). Para más información sobre lo que está permitido con los contenidos de este repositorio, visita [choosealicense.com](https://choosealicense.com/licenses/).
+Este repositorio está bajo la [licencia MIT](../../../LICENSE). Para más información sobre lo que está permitido con los contenidos de este repositorio, visita [choosealicense.com](https://choosealicense.com/licenses/).
 
 ## Agradecimientos
 
