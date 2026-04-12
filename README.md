@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-    <strong>Repository for the APL practical work of the Hardware Virtualization course</strong>
+    <strong>Repository for the APL practical work of the Hardware Virtualization subject</strong>
     <br>
     <strong>- <a href="https://www.unlam.edu.ar/">UNLaM</a> (National University of La Matanza) -</strong>
 </p>
@@ -28,7 +28,7 @@
 
 ## Summary
 
-This repository contains the APL practical work for the Hardware Virtualization course at the [National University of La Matanza (UNLaM)](https://www.unlam.edu.ar/). This practical work consists of developing a series of five scripts in [Bash](https://www.gnu.org/software/bash/) and [PowerShell](https://learn.microsoft.com/en-us/powershell/), learning how to create scripts to automate tasks.
+This repository contains the APL practical work for the Hardware Virtualization subject at the [National University of La Matanza (UNLaM)](https://www.unlam.edu.ar/). This practical work consists of developing a series of five scripts in [Bash](https://www.gnu.org/software/bash/) and [PowerShell](https://learn.microsoft.com/en-us/powershell/), learning how to create scripts to automate tasks.
 
 ### Scripts
 
@@ -107,4 +107,4 @@ This repository is under the [MIT license](./LICENSE). For more information abou
 
 ## Acknowledgments
 
-We would like to thank the teachers from the [UNLaM](https://www.unlam.edu.ar/) Hardware Virtualization course for their support and guidance.
+We would like to thank the teachers from the [UNLaM](https://www.unlam.edu.ar/) Hardware Virtualization subject for their support and guidance.
