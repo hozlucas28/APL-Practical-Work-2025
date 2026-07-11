@@ -2,7 +2,7 @@
 
 > Learning objectives: connection with APIs and web services, handling files and JSON objects, and information caching.
 
-[ [Solution in Bash](../../bash/exercise-05/) ] [ [Solution in PowerShell](./) ] [ [Spanish version](../../../docs/translations/es/exercises/exercise-05.md) ]
+[(solution in Bash)](../../bash/exercise-05/) [(solution in PowerShell)](./) [(spanish version)](../../../docs/translations/es/exercises/exercise-05.md)
 
 A script is required to query country information using a public API. The script will allow searching for countries by name, and once the information of a country is obtained, it must be saved in a cache file to avoid future queries to the API. The relevant details of each country must be displayed on the screen in the format mentioned later.
 
