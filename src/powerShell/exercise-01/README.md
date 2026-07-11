@@ -2,7 +2,7 @@
 
 > Learning objectives: handling text files, processing tabular data, managing parameters, and screen output.
 
-[ [Solution in Bash](../../bash/exercise-01/) ] [ [Solution in PowerShell](./) ] [ [Spanish version](../../../docs/translations/es/exercises/exercise-01.md) ]
+[(solution in Bash)](../../bash/exercise-01/) [(solution in PowerShell)](./) [(spanish version)](../../../docs/translations/es/exercises/exercise-01.md)
 
 A script is required to analyze the results of customer satisfaction surveys from a customer service department. The data is recorded daily in text files, with each survey on a single line.
 
