@@ -2,7 +2,7 @@
 
 > Objetivos de aprendizaje: manejo de archivos de texto, procesamiento de datos tabulares, manejo de parámetros y salida por pantalla.
 
-[ [Solución en Bash](../../../../src/bash/exercise-01/) ] [ [Solución en PowerShell](../../../../src/powerShell/exercise-01/) ] [ [Versión en inglés](../../../../src/bash/exercise-01/README.md) ]
+[(solución en Bash)](../../../../src/bash/exercise-01/) [(solución en PowerShell)](../../../../src/powerShell/exercise-01/) [(versión en inglés)](../../../../src/bash/exercise-01/README.md)
 
 Se requiere un script para analizar los resultados de encuestas de satisfacción de clientes de un servicio de atención al cliente. Los datos se registran diariamente en archivos de texto, con cada encuesta en una línea.
 
