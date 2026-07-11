@@ -2,7 +2,7 @@
 
 > Learning objectives: arrays and matrices.
 
-[ [Solution in Bash](../../bash/exercise-02/) ] [ [Solution in PowerShell](./) ] [ [Spanish version](../../../docs/translations/es/exercises/exercise-02.md) ]
+[(solution in Bash)](../../bash/exercise-02/) [(solution in PowerShell)](./) [(spanish version)](../../../docs/translations/es/exercises/exercise-02.md)
 
 Develop a script to analyze routes in a public transportation network. The network information is represented as an adjacency matrix where the values represent the travel time between stations. The script must be able to determine whether a station is a "hub" (station with the most connections) or find the shortest travel-time path between all stations. If there is more than one path, it will display all that meet the condition. The output will be saved in a file named `report.<inputFileName>` in the same directory as the original file.
 
