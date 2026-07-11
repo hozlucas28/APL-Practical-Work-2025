@@ -2,7 +2,7 @@
 
 > Objetivos de aprendizaje: conexión con APIs y web services, manejo de archivos y objetos JSON, y Cache de información.
 
-[ [Solución en Bash](../../../../src/bash/exercise-05/) ] [ [Solución en PowerShell](../../../../src/powerShell/exercise-05/) ] [ [Versión en inglés](../../../../src/bash/exercise-05/README.md) ]
+[(solución en Bash)](../../../../src/bash/exercise-05/) [(solución en PowerShell)](../../../../src/powerShell/exercise-05/) [(versión en inglés)](../../../../src/bash/exercise-05/README.md)
 
 Se necesita un script para consultar información de países utilizando una API pública. El script permitirá buscar países por nombre y una vez que obtiene la información de un país, se debe guardar en un archivo de Cache para evitar futuras consultas a la API. Los detalles relevantes de cada país deben mostrarse por pantalla con el formato mencionado más adelante.
 
