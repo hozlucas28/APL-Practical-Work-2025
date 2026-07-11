@@ -2,7 +2,7 @@
 
 > Learning objectives: daemon processes, configuration file handling, text search and replacement.
 
-[ [Solution in Bash](../../bash/exercise-04/) ] [ [Solution in PowerShell](./) ] [ [Spanish version](../../../docs/translations/es/exercises/exercise-04.md) ]
+[(solution in Bash)](../../bash/exercise-04/) [(solution in PowerShell)](./) [(spanish version)](../../../docs/translations/es/exercises/exercise-04.md)
 
 A daemon script is required to monitor a [Git](https://git-scm.com/) repository and detect credentials or sensitive data that may have been accidentally uploaded. The daemon must read a configuration file containing a list of keywords or [regex patterns](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions) to search for (e.g., `password`, `API_KEY`, `API_KEY = `). Each time a new modification is detected in the repository’s main branch, the daemon must scan the modified files. If it finds a match, it must log an alert in a log file with the file name, the pattern found, and the date. The script must run in the background, freeing the terminal.
 
