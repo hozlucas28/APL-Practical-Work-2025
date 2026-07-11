@@ -2,7 +2,7 @@
 
 > Objetivos de aprendizaje: arrays y matrices.
 
-[ [Solución en Bash](../../../../src/bash/exercise-02/) ] [ [Solución en PowerShell](../../../../src/powerShell/exercise-02/) ] [ [Versión en inglés](../../../../src/bash/exercise-02/README.md) ]
+[(solución en Bash)](../../../../src/bash/exercise-02/) [(solución en PowerShell)](../../../../src/powerShell/exercise-02/) [(versión en inglés)](../../../../src/bash/exercise-02/README.md)
 
 Desarrollar un script para analizar rutas en una red de transporte público. La información de la red se representa como una matriz de adyacencia donde los valores representan el tiempo de viaje entre estaciones. El script debe ser capaz de determinar si una estación es un "hub" (estación con más conexiones) o encontrar el camino más corto en tiempo entre todas las estaciones. En caso de haber más de un camino, mostrará todos aquellos que cumplan con la condición. La salida se guardará en un archivo `informe.<nombreArchivoEntrada>` en el mismo directorio del archivo original.
 
