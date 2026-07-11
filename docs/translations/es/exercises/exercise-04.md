@@ -2,7 +2,7 @@
 
 > Objetivos de aprendizaje: procesos demonios, manejo de archivos de configuración, búsqueda y reemplazo de texto.
 
-[ [Solución en Bash](../../../../src/bash/exercise-04/) ] [ [Solución en PowerShell](../../../../src/powerShell/exercise-04/) ] [ [Versión en inglés](../../../../src/bash/exercise-04/README.md) ]
+[(solución en Bash)](../../../../src/bash/exercise-04/) [(solución en PowerShell)](../../../../src/powerShell/exercise-04/) [(versión en inglés)](../../../../src/bash/exercise-04/README.md)
 
 Se necesita un script demonio para monitorear un repositorio [Git](https://git-scm.com/) y detectar credenciales o datos sensibles que se hayan subido por error. El demonio debe leer un archivo de configuración que contiene una lista de palabras clave o [patrones regex](https://developer.mozilla.org/es/docs/Web/JavaScript/Guide/Regular_expressions) a buscar (por ejemplo, `password`, `API_KEY`, `API_KEY = `). Cada vez que se detecte una nueva modificación en la rama principal del repositorio, el demonio debe escanear los archivos modificados. Si encuentra alguna coincidencia, debe registrar una alerta en un archivo de log con el nombre del archivo, el patrón encontrado y la fecha. El script debe ejecutarse en segundo plano, liberando la terminal.
 
