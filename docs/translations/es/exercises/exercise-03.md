@@ -2,7 +2,7 @@
 
 > Objetivos de aprendizaje: arrays asociativos, búsqueda de archivos, manejo de archivos y AWK.
 
-[ [Solución en Bash](../../../../src/bash/exercise-03/) ] [ [Solución en PowerShell](../../../../src/powerShell/exercise-03/) ] [ [Versión en inglés](../../../../src/bash/exercise-03/README.md) ]
+[(solución en Bash)](../../../../src/bash/exercise-03/) [(solución en PowerShell)](../../../../src/powerShell/exercise-03/) [(versión en inglés)](../../../../src/bash/exercise-03/README.md)
 
 Desarrollar un script que analice todos los archivos de logs (archivos con extensión `.log`) en un directorio para contar la ocurrencia de eventos específicos. Los eventos a buscar se proporcionarán como una lista de palabras clave.
 
