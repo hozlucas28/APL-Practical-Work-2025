@@ -2,7 +2,7 @@
 
 > Learning objectives: associative arrays, file search, file handling, and AWK.
 
-[ [Solution in Bash](../../bash/exercise-03/) ] [ [Solution in PowerShell](./) ] [ [Spanish version](../../../docs/translations/es/exercises/exercise-03.md) ]
+[(solution in Bash)](../../bash/exercise-03/) [(solution in PowerShell)](./) [(spanish version)](../../../docs/translations/es/exercises/exercise-03.md)
 
 Develop a script that analyzes all log files (files with the `.log` extension) in a directory to count the occurrence of specific events. The events to search for will be provided as a list of keywords.
 
